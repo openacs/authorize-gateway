@@ -1,7 +1,7 @@
 create table authorize_gateway_result_log (
     transaction_id 		varchar(20) not null,
     txn_attempted_type  	varchar(18),
-    txn_attempted_time 		datetime,
+    txn_attempted_time 		timestamptz,
     response 			varchar(400),
     response_code 		varchar(1),
     response_reason_code 	varchar(2),
