@@ -41,15 +41,16 @@
             <file type="query_file" path="www/index.xql"/>
         </files>
         <parameters>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="description"  description="The description of the transaction as it will appear on the customer's statement" section_name="Communication"/>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="test_request"  default="False" description="Switch the communication with Authorize.net over to Test mode" section_name="Communication"/>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="authorize_password"  description="Password to the Authorize.net login" section_name="Security"/>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="authorize_login"  description="Login name to Authorize.net" section_name="Communication"/>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="authorize_url"  default="https://secure.authorize.net/gateway/transact.dll" description="Location (URL) of the Authorize.net Gateway" section_name="Communication"/>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="md5_secret"  description="MD5 Hash Secret from the Automated Direct Connect (ADC) Settings in Authorize.net" section_name="Security"/>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="field_encapsulator"  description="Field encapsulation character in the Automated Direct Connect (ADC) Settings of Authorize.net" section_name="Response"/>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="field_seperator"  default="|" description="Field seperator in Automated Direct Connect (ADC) Settings of Authorize.net" section_name="Response"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="referer_url"  description="The URL to be used as ADC link for Authorize.net" section_name="Security"/>
             <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="CreditCardsAccepted"  description="The credit cards accepted by your Authorize.net account"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="field_seperator"  default="|" description="Field seperator in Automated Direct Connect (ADC) Settings of Authorize.net" section_name="Response"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="field_encapsulator"  description="Field encapsulation character in the Automated Direct Connect (ADC) Settings of Authorize.net" section_name="Response"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="md5_secret"  description="MD5 Hash Secret from the Automated Direct Connect (ADC) Settings in Authorize.net" section_name="Security"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="authorize_url"  default="https://secure.authorize.net/gateway/transact.dll" description="Location (URL) of the Authorize.net Gateway" section_name="Communication"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="authorize_login"  description="Login name to Authorize.net" section_name="Communication"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="authorize_password"  description="Password to the Authorize.net login" section_name="Security"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="test_request"  default="False" description="Switch the communication with Authorize.net over to Test mode" section_name="Communication"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="description"  description="The description of the transaction as it will appear on the customer's statement" section_name="Communication"/>
         </parameters>
 
     </version>
