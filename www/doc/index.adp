@@ -127,7 +127,7 @@
 	with Authorize.net originates from. This URL be listed as a
 	valid ADC URL in the list of accepted referers in the ADC
 	settings. Do <strong>not</strong> leave this secret blank, it
-	ensures the requests received by Authorize.net are comming
+	ensures the requests received by Authorize.net are coming
 	from the @package_name@ and not some spoof.</p>
 
     </li>
