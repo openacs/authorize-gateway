@@ -1,14 +1,13 @@
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"> -->
-
 <master>
   <property name="title">@title@</property>
+  <property name="context_bar">@context_bar@</property>
 
   <h2>@title@</h2>
   <table width="100%">
     <tbody>
       <tr>
 	<td align="left">@context_bar@</td>
-	<td align="right">
+	<td align="right">&nbsp;
           <if @admin_p@ eq 1>
             [ <a href="admin/">Administer</a> ]
           </if>
