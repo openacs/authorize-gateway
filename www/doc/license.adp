@@ -1,7 +1,7 @@
 <master>
-  <property name="title">@title@</property>
-  <property name="signatory">@signatory@</property>
-  <property name="context_bar">@context_bar@</property>
+  <property name="title">@title;noquote@</property>
+  <property name="signatory">@signatory;noquote@</property>
+  <property name="context_bar">@context_bar;noquote@</property>
   <property name="header_stuff"><link href="index.css" type="text/css" rel="stylesheet"></property>
 
   <h2>GNU General Public License</h2>

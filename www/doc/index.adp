@@ -1,12 +1,12 @@
 <master>
-  <property name="title">@title@</property>
-  <property name="signatory">@signatory@</property>
+  <property name="title">@title;noquote@</property>
+  <property name="signatory">@signatory;noquote@</property>
   <property name="header_stuff"><link href="index.css" type="text/css" rel="stylesheet"></property>
   <if @admin_p@ and @authorize_gateway_mounted@>
-    <property name="context_bar"><table width="100%"><tbody><tr><td align="left">@context_bar@</td><td align="right">[ <a href="@package_url@admin/">Administer</a> ]</td></tr> </tbody></table></property>
+    <property name="context_bar"><table width="100%"><tbody><tr><td align="left">@context_bar;noquote@</td><td align="right">[ <a href="@package_url;noquote@admin/">Administer</a> ]</td></tr> </tbody></table></property>
   </if>
   <else>
-    <property name="context_bar">@context_bar@</property>
+    <property name="context_bar">@context_bar;noquote@</property>
   </else>
 
   <h2>Why</h2>
