@@ -29,7 +29,7 @@
 
   <p><a href="mailto:janine@furfly.net">Janine Sisk</a> of <a
       href="http://www.furfly.net">furfly.net</a> and <a
-      href="mailto:bart.teeuwisse@7-sisters.com">Bart Teeuwisse</a>
+      href="mailto:bart.teeuwisse@thecodemill.biz">Bart Teeuwisse</a>
       teamed up to design a general purpose payment service contract
       and to create the first implementations of the contract. Janine
       developed the interface to PayflowPro the successor of CyberCash
@@ -212,7 +212,7 @@
   <h2>Credits</h2>
 
   <p>The @package_name@ was designed and written by <a
-      href="mailto:bart.teeuwisse@7-sisters.com">Bart Teeuwisse</a>
+      href="mailto:bart.teeuwisse@thecodemill.biz">Bart Teeuwisse</a>
       for <a href="http://www.berklee.edu">Berklee College Of
       Music</a> while working as a subcontractor for <a
       href="http://www.furfly.net">furfly.net</a>.</p>

@@ -1,3 +1,3 @@
 drop table authorize_gateway_result_log;
 
-\i authorize-gateway-sc-drop.sql
+@authorize-gateway-sc-drop.sql;

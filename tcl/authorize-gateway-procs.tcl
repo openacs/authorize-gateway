@@ -2,7 +2,7 @@ ad_library {
 
     Procedures to implement Authorize.net credit card transactions.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 }
 
@@ -23,15 +23,20 @@ ad_proc -private authorize_gateway.authorize {
     Connect to Authorize.net to authorize a transaction for the amount 
     given on the card given.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
     # 1. Send transaction off to gateway
 
     set test_request [authorize_gateway.decode_test_request]
-    set field_seperator [ad_parameter field_seperator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
-    set field_encapsulator [ad_parameter field_encapsulator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
-    set referer_url [ad_parameter referer_url -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
+    set field_seperator [ad_parameter field_seperator \
+			     -default [ad_parameter \
+					   -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
+    set field_encapsulator [ad_parameter field_encapsulator \
+				-default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
+    set referer_url [ad_parameter referer_url \
+			 -default [ad_parameter \
+				       -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
 
     # Add the Referer to the headers passed on to Authorize.net
 
@@ -147,18 +152,13 @@ ad_proc -public authorize_gateway.chargecard {
     the authorize_gateway_result_log for transaction_id. AuthCapture will 
     be used if there is no prior authorize transaction in the log.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
 
     # 1. Check for the existence of a prior auth_only for the transaction_id.
 
-    if {[db_0or1row select_auth_only "
-	select transaction_id, auth_code
-	from authorize_gateway_result_log 
-	where txn_attempted_type='AUTH_ONLY' 
-	and response_code='1' 
-	and transaction_id=:transaction_id"]} {
+    if {[db_0or1row select_auth_only {}]} {
 
 	# 2a. The transaction has been authorized, now mark the transaction for settlement.
 
@@ -191,16 +191,22 @@ ad_proc -public authorize_gateway.return {
     The transaction id needs to reference a settled transaction performed 
     with the same card.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
 
     # 1. Send transaction off to gateway
 
     set test_request [authorize_gateway.decode_test_request]
-    set field_seperator [ad_parameter field_seperator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
-    set field_encapsulator [ad_parameter field_encapsulator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
-    set referer_url [ad_parameter referer_url -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
+    set field_seperator [ad_parameter field_seperator \
+			     -default [ad_parameter \
+					   -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
+    set field_encapsulator [ad_parameter field_encapsulator \
+				-default [ad_parameter \
+					      -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
+    set referer_url [ad_parameter referer_url \
+			 -default [ad_parameter \
+				       -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
 
     # Add the Referer to the headers passed on to Authorize.net
 
@@ -298,15 +304,21 @@ ad_proc -public authorize_gateway.void {
 } {
     Connect to Authorize.net to void the transaction with transaction_id.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
     # 1. Send transaction off to gateway
 
     set test_request [authorize_gateway.decode_test_request]
-    set field_seperator [ad_parameter field_seperator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
-    set field_encapsulator [ad_parameter field_encapsulator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
-    set referer_url [ad_parameter referer_url -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
+    set field_seperator [ad_parameter field_seperator \
+			     -default [ad_parameter \
+					   -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
+    set field_encapsulator [ad_parameter field_encapsulator \
+				-default [ad_parameter \
+					      -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
+    set referer_url [ad_parameter referer_url \
+			 -default [ad_parameter \
+				       -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
 
     # Add the Referer to the headers passed on to Authorize.net
 
@@ -394,24 +406,17 @@ ad_proc -public authorize_gateway.info {
     payment service contract. Returns the package_key, version, package name
     cards accepted and a list of return codes.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
 
     array set info [list \
 			package_key authorize-gateway \
-			version [db_string get_package_version "
-			    select version_name
-			    from apm_package_versions 
-			    where enabled_p = 't' 
-			    and package_key = 'authorize-gateway'"] \
-			package_name [db_string get_package_name "
-			    select instance_name 
-			    from apm_packages p, apm_package_versions v 
-			    where p.package_key = v.package_key 
-			    and v.enabled_p = 't' 
-			    and p.package_key = 'authorize-gateway'"] \
-			cards_accepted [ad_parameter CreditCardsAccepted -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] CreditCardsAccepted]] \
+			version [db_string get_package_version {}] \
+			package_name [db_string get_package_name {}] \
+			cards_accepted [ad_parameter CreditCardsAccepted \
+					    -default [ad_parameter \
+							  -package_id [apm_package_id_from_key authorize-gateway] CreditCardsAccepted]] \
 			success [nsv_get payment_gateway_return_codes success] \
 			failure [nsv_get payment_gateway_return_codes failure] \
 			retry [nsv_get payment_gateway_return_codes retry] \
@@ -433,15 +438,21 @@ ad_proc -private authorize_gateway.postauth {
     Connect to Authorize.net to PRIOR_AUTH_CAPTURE the transaction with transaction id. 
     The transaction needs to have been AUTH_ONLY before calling this procedure.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
     # 1. Send transaction off to gateway
 
     set test_request [authorize_gateway.decode_test_request]
-    set field_seperator [ad_parameter field_seperator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
-    set field_encapsulator [ad_parameter field_encapsulator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
-    set referer_url [ad_parameter referer_url -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
+    set field_seperator [ad_parameter field_seperator \
+			     -default [ad_parameter \
+					   -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
+    set field_encapsulator [ad_parameter field_encapsulator \
+				-default [ad_parameter \
+					      -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
+    set referer_url [ad_parameter referer_url \
+			 -default [ad_parameter \
+				       -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
 
     # Add the Referer to the headers passed on to Authorize.net
 
@@ -543,15 +554,21 @@ ad_proc -private authorize_gateway.authcapture {
     Connect to Authorize.net to authorize and shedule the transaction for automatic 
     settling. No further action is needed to complete the transastion. 
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
     # 1. Send transaction off to gateway
 
     set test_request [authorize_gateway.decode_test_request]
-    set field_seperator [ad_parameter field_seperator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
-    set field_encapsulator [ad_parameter field_encapsulator -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
-    set referer_url [ad_parameter referer_url -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
+    set field_seperator [ad_parameter field_seperator \
+			     -default [ad_parameter \
+					   -package_id [apm_package_id_from_key authorize-gateway] field_seperator]]
+    set field_encapsulator [ad_parameter field_encapsulator \
+				-default [ad_parameter \
+					      -package_id [apm_package_id_from_key authorize-gateway] field_encapsulator]]
+    set referer_url [ad_parameter referer_url \
+			 -default [ad_parameter \
+				       -package_id [apm_package_id_from_key authorize-gateway] referer_url]]
 
     # Add the Referer to the headers passed on to Authorize.net
 
@@ -657,7 +674,7 @@ ad_proc -private authorize_gateway.decode_response {
     Authorize.net response codes to standardized payment service
     contract response codres.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
 
@@ -776,11 +793,13 @@ ad_proc -private authorize_gateway.decode_test_request {
     package. This prevents errors due to incorrect values of the test_request
     parameter
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
 } {
 
-    switch -exact [string tolower [ad_parameter test_request -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] test_request]]] {
+    switch -exact [string tolower [ad_parameter test_request \
+				       -default [ad_parameter \
+						     -package_id [apm_package_id_from_key authorize-gateway] test_request]]] {
 	"0" -
 	"n" -
 	"no" -
@@ -815,15 +834,9 @@ ad_proc -private authorize_gateway.log_results {
     Write the results of the current operation to the database.  If it fails,
     log it but don't let the user know about it.
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
 } {
-    if [catch {db_dml do-insert "
-	insert into authorize_gateway_result_log
-	(transaction_id, txn_attempted_time, txn_attempted_type, response, response_code, response_reason_code, response_reason_text, response_transaction_id, 
-	 auth_code, avs_code, amount) 
-	values 
-	(:transaction_id, :txn_attempted_time, :txn_attempted_type, :response, :response_code, :response_reason_code, :response_reason_text, :response_transaction_id, 
-	 :auth_code, :avs_code, :amount)"} errmsg] {
+    if [catch {db_dml do-insert {}} errmsg] {
 	ns_log Error "Wasn't able to do insert into authorize_gateway_result_log for transaction_id $transaction_id; error was $errmsg"
     }
 }

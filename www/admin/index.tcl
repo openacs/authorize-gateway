@@ -2,7 +2,7 @@ ad_page_contract {
     
     Lists the log of the results 
 
-    @author Bart Teeuwisse <bart.teeuwisse@7-sisters.com>
+    @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date April 2002
 } {
     {orderby "txn_time*"}
@@ -23,12 +23,7 @@ set admin_p [ad_permission_p $package_id admin]
 
 # Get the package name and set the title.
 
-if {[db_0or1row get_package_name "
-    select p.instance_name 
-    from apm_packages p, apm_package_versions v
-    where p.package_id = :package_id
-    and p.package_key = v.package_key
-    and v.enabled_p = 't'"]} {
+if {[db_0or1row get_package_name {}]} {
     set title "$instance_name Administration"
 } else {
     set title "Administration"
@@ -72,9 +67,4 @@ set table_def {
 
 # Create the table to display the results from Authorize.net
 
-set result_table [ad_table result_select "
-    select transaction_id, to_char(txn_attempted_time, 'MM-DD-YYYY HH12:MI:SS AM') as txn_time, txn_attempted_type, response, response_code, response_reason_code, 
-	response_reason_text, auth_code, avs_code, amount 
-    from authorize_gateway_result_log 
-    where '1'='1' [ad_dimensional_sql $dimensional] 
-    [ad_order_by_from_sort_spec $orderby $table_def]" $table_def]
+set result_table [ad_table result_select {} $table_def]

@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
 
 <queryset>
-  <rdbms><type>postgresql</type><version>7.1</version></rdbms>
+   <rdbms><type>oracle</type><version>8.1.6</version></rdbms>
 
   <partialquery name="transaction_last_24hours">      
     <querytext>
-      txn_attempted_time + '1 days'::interval > now()
+	txn_attempted_time + 1 > sysdate
     </querytext>
   </partialquery>
 
   <partialquery name="transaction_last_week">      
     <querytext>
-      txn_attempted_time + '7 days'::interval > now()
+	txn_attempted_time + 7 > sysdate
     </querytext>
   </partialquery>
 
   <partialquery name="transaction_last_month">      
     <querytext>
-      txn_attempted_time + '1 months'::interval > now()
+	add_months(txn_attempted_time,1) > sysdate
     </querytext>
   </partialquery>
 

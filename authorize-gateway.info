@@ -12,7 +12,7 @@
         <database>oracle</database>
         <database>postgresql</database>
     </database-support>
-        <owner url="mailto:bart.teeuwisse@7-sisters.com">Bart Teeuwisse</owner>
+        <owner url="mailto:bart.teeuwisse@thecodemill.biz">Bart Teeuwisse</owner>
         <summary>Authorize.net payment gateway</summary>
         <release-date>2002-05-13</release-date>
         <description format="text/html">Payment gateway to Authorize.net. An account with Authorize.net and a merchant account are required.</description>
