@@ -836,6 +836,18 @@ ad_proc -private authorize_gateway.log_results {
 
     @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
 } {
+    set authorize_url [ad_parameter authorize_url \
+			   -default [ad_parameter \
+					 -package_id [apm_package_id_from_key authorize-gateway] \
+					 authorize_url]]
+    if {[string length $response] > 400} {
+	ns_log Notice "Response from $authorize_url exceeds database field length. Trimming response '$response' to 400 characters."
+	set response [string range $response 0 399]
+    }
+    if {[string length $response] > 100} {
+	ns_log Notice "Response reason text from $authorize_url exceeds database field length. Trimming response reason text '$response_reason_text' to 100 characters."
+	set response_reason_text [string range $response_reason_text 0 99]
+    }
     if [catch {db_dml do-insert {}} errmsg] {
 	ns_log Error "Wasn't able to do insert into authorize_gateway_result_log for transaction_id $transaction_id; error was $errmsg"
     }
