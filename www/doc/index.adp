@@ -1,24 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "bla">
- 
 <master>
   <property name="title">@title@</property>
   <property name="signatory">@signatory@</property>
   <property name="header_stuff"><link href="index.css" type="text/css" rel="stylesheet"></property>
-
-  <h2>@title@</h2>
-  <table width="100%">
-    <tbody>
-      <tr>
-	<td align="left">@context_bar@</td>
-	<td align="right">
   <if @admin_p@ and @authorize_gateway_mounted@>
-    [ <a href="@package_url@admin/">Administer</a> ]
+    <property name="context_bar"><table width="100%"><tbody><tr><td align="left">@context_bar@</td><td align="right">[ <a href="@package_url@admin/">Administer</a> ]</td></tr> </tbody></table></property>
   </if>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <hr>
+  <else>
+    <property name="context_bar">@context_bar@</property>
+  </else>
 
   <h2>Why</h2>
 
