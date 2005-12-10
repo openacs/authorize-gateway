@@ -844,7 +844,7 @@ ad_proc -private authorize_gateway.log_results {
 	ns_log Notice "Response from $authorize_url exceeds database field length. Trimming response '$response' to 400 characters."
 	set response [string range $response 0 399]
     }
-    if {[string length $response] > 100} {
+    if {[string length $response_reason_text] > 100} {
 	ns_log Notice "Response reason text from $authorize_url exceeds database field length. Trimming response reason text '$response_reason_text' to 100 characters."
 	set response_reason_text [string range $response_reason_text 0 99]
     }
