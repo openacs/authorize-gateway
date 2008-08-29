@@ -80,13 +80,14 @@ ad_proc -private authorize_gateway.authorize {
     # response. Timeout after 30 seconds, don't allow any redirects
     # and pass a set of custom headers to Authorize.net.
 
-    ns_log Debug "Full URL for AUTHORIZE $full_url"
+    ns_log Debug "authorize_gateway.authorize: Full URL for AUTHORIZE $full_url"
     if {[catch {set response [ns_httpsget $full_url 30 0 $header]} error_message]} {
 	authorize_gateway.log_results $transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "AUTH_ONLY" $error_message 3 "" $error_message "" "" $amount
+    ns_log Notice "authorize_gateway.authorize: response $response"
 	set return(response_code) [nsv_get payment_gateway_return_codes retry]
 	set return(reason) "Transaction $transaction_id failed, could not contact Authorize.net: $error_message"
 	set return(transaction_id) $transaction_id
-	ns_log Notice "ERROR in contacting $error_message $header"
+	ns_log Notice "authorize_gateway.authorize: ERROR in contacting $error_message $header"
 	return [array get return]
     } else {
 
@@ -104,7 +105,8 @@ ad_proc -private authorize_gateway.authorize {
 	# not a character delimited list but an HTML page. An ADC
 	# response has certainly 38 or more elements. Future
 	# versions might return more elements.
-	ns_log Debug "REPONSE LIST:: $response_list"
+	ns_log Debug "authorize_gateway.authorize: REPONSE LIST: $response_list"
+    ns_log Notice "authorize_gateway.authorize: llength response_list = [llength $response_list]"
 	if { [llength $response_list] < 38 } {
 	    authorize_gateway.log_results $transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "AUTH_ONLY" $response 3 "" \
 		"Authorize.net must be down, the response was not a character delimited list" "" "" $amount
@@ -376,7 +378,7 @@ ad_proc -public authorize_gateway.void {
 	# response has certainly 38 or more elements. Future
 	# versions might return more elements.
 
-	ns_log Debug "AUTHORIZE RESPONSE $response_list :: ["
+	ns_log Debug "authorize_gateway.void: AUTHORIZE response_list ${response_list}"
 	if { [llength $response_list] < 38 } {
 	    authorize_gateway.log_results $transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "VOID" $response 3 "" \
 		"Authorize.net must be down, the response was not a character delimited list" "" "" $amount
@@ -727,6 +729,8 @@ ad_proc -private authorize_gateway.decode_response {
 
 	# The response is authentic. Now decode the response code
 	# and the reason code.
+    ns_log Debug "authorize_gateway.decode_response: md5 hashes match."
+    ns_log Debug "authorize_gateway.decode_response: response_code = '$response_code'"
 
 	switch -exact $response_code {
 	    "1" {
@@ -785,6 +789,7 @@ ad_proc -private authorize_gateway.decode_response {
     } else {
 	set return(response_code) [nsv_get payment_gateway_return_codes failure]
 	set return(reason) "There has been an error processing transaction $response_transaction_id: the MD5 hash does not match"
+    ns_log Error "authorize_gateway.decode_response: transaction $response_transaction_id: the MD5 hash does not match"
 	set return(transaction_id) $transaction_id
 	return [array get return]
     }
@@ -844,14 +849,14 @@ ad_proc -private authorize_gateway.log_results {
 					 -package_id [apm_package_id_from_key authorize-gateway] \
 					 authorize_url]]
     if {[string length $response] > 400} {
-	ns_log Notice "Response from $authorize_url exceeds database field length. Trimming response '$response' to 400 characters."
+	ns_log Notice "authorize_gateway.log_results: Response from $authorize_url exceeds database field length. Trimming response '$response' to 400 characters."
 	set response [string range $response 0 399]
     }
     if {[string length $response_reason_text] > 100} {
-	ns_log Notice "Response reason text from $authorize_url exceeds database field length. Trimming response reason text '$response_reason_text' to 100 characters."
+	ns_log Notice "authorize_gateway.log_results: Response reason text from $authorize_url exceeds database field length. Trimming response reason text '$response_reason_text' to 100 characters."
 	set response_reason_text [string range $response_reason_text 0 99]
     }
     if [catch {db_dml do-insert {}} errmsg] {
-	ns_log Error "Wasn't able to do insert into authorize_gateway_result_log for transaction_id $transaction_id; error was $errmsg"
+	ns_log Error "authorize_gateway.log_results: Wasn't able to do insert into authorize_gateway_result_log for transaction_id $transaction_id; error was $errmsg"
     }
 }
