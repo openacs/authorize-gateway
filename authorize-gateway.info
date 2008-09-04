@@ -7,7 +7,7 @@
     <initial-install-p>f</initial-install-p>
     <singleton-p>t</singleton-p>
 
-    <version name="4.6" url="http://openacs.org/repository/download/apm/authorize-gateway-4.6.apm">
+    <version name="5.01" url="http://openacs.org/repository/download/apm/authorize-gateway-5.01.apm">
     <database-support>
         <database>oracle</database>
         <database>postgresql</database>
@@ -15,9 +15,9 @@
         <owner url="mailto:bart.teeuwisse@thecodemill.biz">Bart Teeuwisse</owner>
         <summary>Authorize.net payment gateway</summary>
         <release-date>2002-05-13</release-date>
-        <description format="text/html">Payment gateway to Authorize.net. An account with Authorize.net and a merchant account are required.</description>
+        <description format="text/html">Payment gateway to Authorize.net. An account with Authorize.net and a merchant account are required.  This version works with ecommerce version 5.12 and above.</description>
 
-        <requires url="payment-gateway" version="4.6"/>
+        <requires url="payment-gateway" version="5.01"/>
 
         <files>
             <file type="package_spec" path="authorize-gateway.info"/>

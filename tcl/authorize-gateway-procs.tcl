@@ -13,6 +13,7 @@ ad_proc -private authorize_gateway.authorize {
     card_number
     card_exp_month
     card_exp_year
+    card_code
     card_name
     billing_street
     billing_city
@@ -70,6 +71,9 @@ ad_proc -private authorize_gateway.authorize {
     # Set the credit card information.
 
     append full_url "&x_Card_Num=[ns_urlencode $card_number]&x_Exp_Date=[ns_urlencode ${card_exp_month}/${card_exp_year}]&x_Last_Name=[ns_urlencode $card_name]"
+    if { [string length $card_code] > 0 } {
+        append full_url "&x_Card_Code=[ns_urlencode $card_code]"
+    }
 
     # Set the billing information. The information will be used by
     # Authorize.net to run an AVS check.
@@ -122,6 +126,11 @@ ad_proc -private authorize_gateway.authorize {
 	    set response_avs_code [lindex $response_list 5]
 	    set response_transaction_id [lindex $response_list 6]
 	    set response_md5_hash [lindex $response_list 37]
+        # add ccv response to avs response code, which has extra fixed space available. No need to change the data model
+        set response_cvv_code [lindex $response_list 38]
+        set response_avs_code [string range "${response_avs_code} " 0 0]
+        append response_avs_code $response_cvv_code
+
 	    authorize_gateway.log_results $response_transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "AUTH_ONLY" \
 		$response $response_code $response_reason_code $response_reason_text $response_auth_code $response_avs_code $amount
 
@@ -140,6 +149,7 @@ ad_proc -public authorize_gateway.chargecard {
     card_number
     card_exp_month
     card_exp_year
+    card_code
     card_name
     billing_street
     billing_city
@@ -184,6 +194,7 @@ ad_proc -public authorize_gateway.return {
     card_number
     card_exp_month
     card_exp_year
+    card_code
     card_name
     billing_street
     billing_city
@@ -238,6 +249,9 @@ ad_proc -public authorize_gateway.return {
     # Set the credit card information.
 
     append full_url "&x_Card_Num=[ns_urlencode $card_number]&x_Exp_Date=[ns_urlencode ${card_exp_month}/${card_exp_year}]&x_Last_Name=[ns_urlencode $card_name]"
+    if { [string length $card_code] > 0 } {
+        append full_url "&x_Card_Code=[ns_urlencode $card_code]"
+    }
 
     # Contact Authorize.net and receive the character delimited
     # response. Timeout after 30 seconds, don't allow any redirects
@@ -281,6 +295,11 @@ ad_proc -public authorize_gateway.return {
 	    set response_avs_code [lindex $response_list 5]
 	    set response_transaction_id [lindex $response_list 6]
 	    set response_md5_hash [lindex $response_list 37]
+        # add ccv response to avs response code, which has extra fixed space available. No need to change the data model
+        set response_cvv_code [lindex $response_list 38]
+        set response_avs_code [string range "${response_avs_code} " 0 0]
+        append response_avs_code $response_cvv_code
+
 	    authorize_gateway.log_results $response_transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "CREDIT" \
 		$response $response_code $response_reason_code $response_reason_text $response_auth_code $response_avs_code $amount
 
@@ -299,6 +318,7 @@ ad_proc -public authorize_gateway.void {
     card_number
     card_exp_month
     card_exp_year
+    card_code
     card_name
     billing_street
     billing_city
@@ -350,6 +370,9 @@ ad_proc -public authorize_gateway.void {
     # Set the credit card information.
 
     append full_url "&x_Card_Num=[ns_urlencode $card_number]&x_Exp_Date=[ns_urlencode ${card_exp_month}/${card_exp_year}]&x_Last_Name=[ns_urlencode $card_name]"
+    if { [string length $card_code] > 0 } {
+        append full_url "&x_Card_Code=[ns_urlencode $card_code]"
+    }
 
     # Contact Authorize.net and receive the character delimited
     # response. Timeout after 30 seconds, don't allow any redirects
@@ -394,6 +417,11 @@ ad_proc -public authorize_gateway.void {
 	    set response_avs_code [lindex $response_list 5]
 	    set response_transaction_id [lindex $response_list 6]
 	    set response_md5_hash [lindex $response_list 37]
+        # add ccv response to avs response code, which has extra fixed space available. No need to change the data model
+        set response_cvv_code [lindex $response_list 38]
+        set response_avs_code [string range "${response_avs_code} " 0 0]
+        append response_avs_code $response_cvv_code
+
 	    authorize_gateway.log_results $response_transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "VOID" \
 		$response $response_code $response_reason_code $response_reason_text $response_auth_code $response_avs_code $amount
 
@@ -531,6 +559,11 @@ ad_proc -private authorize_gateway.postauth {
 	    set response_avs_code [lindex $response_list 5]
 	    set response_transaction_id [lindex $response_list 6]
 	    set response_md5_hash [lindex $response_list 37]
+        # add ccv response to avs response code, which has extra fixed space available. No need to change the data model
+        set response_cvv_code [lindex $response_list 38]
+        set response_avs_code [string range "${response_avs_code} " 0 0]
+        append response_avs_code $response_cvv_code
+
 	    authorize_gateway.log_results $response_transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "PRIOR_AUTH_CAPTURE" \
 		$response $response_code $response_reason_code $response_reason_text $response_auth_code $response_avs_code $amount
 
@@ -549,6 +582,7 @@ ad_proc -private authorize_gateway.authcapture {
     card_number
     card_exp_month
     card_exp_year
+    card_code
     card_name
     billing_street
     billing_city
@@ -606,6 +640,9 @@ ad_proc -private authorize_gateway.authcapture {
     # Set the credit card information.
 
     append full_url "&x_Card_Num=[ns_urlencode $card_number]&x_Exp_Date=[ns_urlencode ${card_exp_month}/${card_exp_year}]&x_Last_Name=[ns_urlencode $card_name]"
+    if { [string length $card_code] > 0 } {
+        append full_url "&x_Card_Code=[ns_urlencode $card_code]"
+    }
 
     # Set the billing information. The information will be used by
     # Authorize.net to run an AVS check.
@@ -655,6 +692,11 @@ ad_proc -private authorize_gateway.authcapture {
 	    set response_avs_code [lindex $response_list 5]
 	    set response_transaction_id [lindex $response_list 6]
 	    set response_md5_hash [lindex $response_list 37]
+        # add ccv response to avs response code, which has extra fixed space available. No need to change the data model
+        set response_cvv_code [lindex $response_list 38]
+        set response_avs_code [string range "${response_avs_code} " 0 0]
+        append response_avs_code $response_cvv_code
+
 	    authorize_gateway.log_results $response_transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "AUTH_CAPTURE" \
 		$response $response_code $response_reason_code $response_reason_text $response_auth_code $response_avs_code $amount
 
@@ -677,7 +719,7 @@ ad_proc -private authorize_gateway.decode_response {
 } {
     Decode the response from Authorize.net. Check authenticity, then map
     Authorize.net response codes to standardized payment service
-    contract response codres.
+    contract response codes.
 
     @author Bart Teeuwisse <bart.teeuwisse@thecodemill.biz>
     @creation-date March 2002
@@ -750,8 +792,7 @@ ad_proc -private authorize_gateway.decode_response {
 		# Some of the transactions that encountered an 
 		# error while being processed can be retried in a
 		# little while. See the Authorize.net
-		# documentation 
-		# (https://secure.authorize.net/docs/response.pml)
+		# developer documentation 
 		# for a complete list of response codes.
 
 		switch -exact $response_reason_code {
@@ -763,19 +804,26 @@ ad_proc -private authorize_gateway.decode_response {
 		    "23" -
 		    "25" -
 		    "26" {
-			set return(response_code) [nsv_get payment_gateway_return_codes retry]
-			set return(reason) "There has been an error processing transaction $response_transaction_id: $response_reason_text"
-			set return(transaction_id) $transaction_id
-			return [array get return]
+                set return(response_code) [nsv_get payment_gateway_return_codes retry]
+                set return(reason) "There has been an error processing transaction $response_transaction_id: $response_reason_text"
+                set return(transaction_id) $transaction_id
+                return [array get return]
 		    }
+            "78" {
+                # card_code is invalid
+                set return(response_code) [nsv_get payment_gateway_return_codes failure]
+                set return(reason) "Transaction $response_transaction_id has been declined: $response_reason_text"
+                set return(transaction_id) $transaction_id
+                return [array get return]
+            }
 		    default {
 
-			# All other transactions failed indefinitely.
+                # All other transactions failed indefinitely.
 
-			set return(response_code) [nsv_get payment_gateway_return_codes failure]
-			set return(reason) "There has been an error processing transaction $response_transaction_id: $response_reason_text"
-			set return(transaction_id) $transaction_id
-			return [array get return]
+                set return(response_code) [nsv_get payment_gateway_return_codes failure]
+                set return(reason) "There has been an error processing transaction $response_transaction_id: $response_reason_text"
+                set return(transaction_id) $transaction_id
+                return [array get return]
 		    }
 		}
 	    }
@@ -859,4 +907,31 @@ ad_proc -private authorize_gateway.log_results {
     if [catch {db_dml do-insert {}} errmsg] {
 	ns_log Error "authorize_gateway.log_results: Wasn't able to do insert into authorize_gateway_result_log for transaction_id $transaction_id; error was $errmsg"
     }
+}
+
+ad_proc -private authorize_gateway.expand_avs {
+    {avs_code ""}
+} {
+    Convert AVS code to text response.
+
+    @creation-date September 2008
+} {
+    # this is not going into a db table because this data rarely changes, the package is a service, and the only access should be via the api anyway.
+    switch -exact -- $avs_code {
+        A { set avs_text "Address (Street) matches, ZIP does not" }
+        B { set avs_text "Address information not provided for AVS check" }
+        E { set avs_text "AVS error" }
+        G { set avs_text "Non U.S. Card Issuing Bank" }
+        N { set avs_text "No Match on Address (Street) or ZIP" }
+        P { set avs_text "AVS not applicable for this transaction" }
+        R { set avs_text "Retry - System unavailable or timed out" }
+        S { set avs_text "Service not supported by issuer" }
+        U { set avs_text "Address information is unavailable" }
+        W { set avs_text "9 digit ZIP matches, Address (Street) does not" }
+        X { set avs_text "Address (Street) and 9 digit ZIP match" }
+        Y { set avs_text "Address (Street) and 5 digit ZIP match" }
+        Z { set avs_text "5 digit ZIP matches, Address (Street) does not" }
+        default { set avs_text "" }
+    }
+    return $avs_text
 }

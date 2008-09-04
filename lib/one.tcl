@@ -12,4 +12,8 @@ db_1row get_transaction_comments "select response_reason_text, avs_code
       from authorize_gateway_result_log 
       where transaction_id = :transaction_id and amount = :amount and (substr(txn_attempted_type,1,9) = 'AUTH_ONLY' or substr(txn_attempted_type,1,12) = 'AUTH_CAPTURE')"
 
-set avs_text [authorize_gateway.expand_avs $avs_code]
+# decode left most avs_code. Second character is card CVV2/CVC2/CID code response
+set avs_text [authorize_gateway.expand_avs [string range $avs_code 0 0]]
+
+set code_text "CID: [string range $avs_code 1 1]"
+
