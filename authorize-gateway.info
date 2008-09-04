@@ -17,7 +17,7 @@
         <release-date>2002-05-13</release-date>
         <description format="text/html">Payment gateway to Authorize.net. An account with Authorize.net and a merchant account are required.  This version works with ecommerce version 5.12 and above.</description>
 
-        <requires url="payment-gateway" version="5.01"/>
+        <requires url="payment-gateway" version="4.6"/>
 
         <files>
             <file type="package_spec" path="authorize-gateway.info"/>
