@@ -765,8 +765,10 @@ ad_proc -private authorize_gateway.decode_response {
 
     # The dqd_md5 functions is provided by Rob Mayoff's dqd_utils
     # module for AOLServer. (http://dqd.com/~mayoff/aolserver/)
+    # We are replacing dqd_md5 with tcllib's md5::md5 -hex
 
-    set md5_hash [string tolower [dqd_md5 "[ad_parameter md5_secret -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] md5_secret]][ad_parameter authorize_login -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] authorize_login]]$response_transaction_id[format "%0.2f" $amount]"]]
+
+    set md5_hash [string tolower [md5::md5 -hex "[ad_parameter md5_secret -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] md5_secret]][ad_parameter authorize_login -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] authorize_login]]$response_transaction_id[format "%0.2f" $amount]"]]
     if {$md5_hash == [string tolower $response_md5_hash]} {
 
 	# The response is authentic. Now decode the response code
