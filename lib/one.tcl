@@ -8,12 +8,17 @@ set package_id [ad_conn package_id]
 set admin_p [ad_permission_p $package_id admin]
 
 # get transaction log comments. 
-db_1row get_transaction_comments "select response_reason_text, avs_code
+db_0or1row get_transaction_comments "select response_reason_text, avs_code
       from authorize_gateway_result_log 
       where transaction_id = :transaction_id and amount = :amount and (substr(txn_attempted_type,1,9) = 'AUTH_ONLY' or substr(txn_attempted_type,1,12) = 'AUTH_CAPTURE')"
 
-# decode left most avs_code. Second character is card CVV2/CVC2/CID code response
-set avs_text [authorize_gateway.expand_avs [string range $avs_code 0 0]]
+if { [info exists response_reason_text] && [info exists avs_code] } {
+    # decode left most avs_code. Second character is card CVV2/CVC2/CID code response
+    set avs_text [authorize_gateway.expand_avs [string range $avs_code 0 0]]
 
-set code_text "CID: [string range $avs_code 1 1]"
-
+    set code_text "CID: [string range $avs_code 1 1]"
+} else {
+    set response_reason_text ""
+    set avs_text ""
+    set code_text ""
+}
