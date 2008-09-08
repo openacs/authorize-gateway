@@ -768,80 +768,81 @@ ad_proc -private authorize_gateway.decode_response {
     # We are replacing dqd_md5 with tcllib's md5::md5 -hex
 
 
-    set md5_hash [string tolower [md5::md5 -hex "[ad_parameter md5_secret -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] md5_secret]][ad_parameter authorize_login -default [ad_parameter -package_id [apm_package_id_from_key authorize-gateway] authorize_login]]$response_transaction_id[format "%0.2f" $amount]"]]
+    set md5_hash [string tolower [md5::md5 -hex "[parameter::get -parameter md5_secret -package_id [apm_package_id_from_key authorize-gateway] -default [parameter::get -package_id [apm_package_id_from_key authorize-gateway] -parameter md5_secret]][parameter::get -parameter authorize_login -package_id [apm_package_id_from_key authorize-gateway] -default [parameter::get -package_id [apm_package_id_from_key authorize-gateway] -parameter authorize_login]]${response_transaction_id}[format "%0.2f" $amount]"]]
     if {$md5_hash == [string tolower $response_md5_hash]} {
 
-	# The response is authentic. Now decode the response code
-	# and the reason code.
-    ns_log Debug "authorize_gateway.decode_response: md5 hashes match."
-    ns_log Debug "authorize_gateway.decode_response: response_code = '$response_code'"
+        # The response is authentic. Now decode the response code
+        # and the reason code.
+        ns_log Debug "authorize_gateway.decode_response: md5 hashes match."
+        ns_log Debug "authorize_gateway.decode_response: response_code = '$response_code'"
 
-	switch -exact $response_code {
-	    "1" {
-		set return(response_code) [nsv_get payment_gateway_return_codes success]
-		set return(reason) "Transaction $response_transaction_id has been approved."
-		set return(transaction_id) $response_transaction_id
-		return [array get return]
-	    }
-	    "2" {
-		set return(response_code) [nsv_get payment_gateway_return_codes failure]
-		set return(reason) "Transaction $response_transaction_id has been declined: $response_reason_text"
-		set return(transaction_id) $transaction_id
-		return [array get return]
-	    }
-	    "3" {
-
-		# Some of the transactions that encountered an 
-		# error while being processed can be retried in a
-		# little while. See the Authorize.net
-		# developer documentation 
-		# for a complete list of response codes.
-
-		switch -exact $response_reason_code {
-		    "11" -
-		    "19" -
-		    "20" -
-		    "21" -
-		    "22" -
-		    "23" -
-		    "25" -
-		    "26" {
-                set return(response_code) [nsv_get payment_gateway_return_codes retry]
-                set return(reason) "There has been an error processing transaction $response_transaction_id: $response_reason_text"
-                set return(transaction_id) $transaction_id
+        switch -exact $response_code {
+            "1" {
+                set return(response_code) [nsv_get payment_gateway_return_codes success]
+                set return(reason) "Transaction $response_transaction_id has been approved."
+                set return(transaction_id) $response_transaction_id
                 return [array get return]
-		    }
-            "78" {
-                # card_code is invalid
+            }
+            "2" {
                 set return(response_code) [nsv_get payment_gateway_return_codes failure]
                 set return(reason) "Transaction $response_transaction_id has been declined: $response_reason_text"
                 set return(transaction_id) $transaction_id
                 return [array get return]
             }
-		    default {
+            "3" {
+                
+                # Some of the transactions that encountered an 
+                # error while being processed can be retried in a
+                # little while. See the Authorize.net
+                # developer documentation 
+                # for a complete list of response codes.
 
-                # All other transactions failed indefinitely.
-
-                set return(response_code) [nsv_get payment_gateway_return_codes failure]
-                set return(reason) "There has been an error processing transaction $response_transaction_id: $response_reason_text"
+                switch -exact $response_reason_code {
+                    "11" -
+                    "19" -
+                    "20" -
+                    "21" -
+                    "22" -
+                    "23" -
+                    "25" -
+                    "26" {
+                        set return(response_code) [nsv_get payment_gateway_return_codes retry]
+                        set return(reason) "There has been an error processing transaction $response_transaction_id: $response_reason_text"
+                        set return(transaction_id) $transaction_id
+                        return [array get return]
+                    }
+                    "78" {
+                        # card_code is invalid
+                        set return(response_code) [nsv_get payment_gateway_return_codes failure]
+                        set return(reason) "Transaction $response_transaction_id has been declined: $response_reason_text"
+                        set return(transaction_id) $transaction_id
+                        return [array get return]
+                    }
+                    default {
+                        
+                        # All other transactions failed indefinitely.
+                        
+                        set return(response_code) [nsv_get payment_gateway_return_codes failure]
+                        set return(reason) "There has been an error processing transaction $response_transaction_id: $response_reason_text"
+                        set return(transaction_id) $transaction_id
+                        return [array get return]
+                    }
+                }
+            }
+            default {
+                set return(response_code) [nsv_get payment_gateway_return_codes not_implemented]
+                set return(reason) "Authorize.net returned an unknown response_code: $response_code"
                 set return(transaction_id) $transaction_id
                 return [array get return]
-		    }
-		}
-	    }
-	    default {
-		set return(response_code) [nsv_get payment_gateway_return_codes not_implemented]
-		set return(reason) "Authorize.net returned an unknown response_code: $response_code"
-		set return(transaction_id) $transaction_id
-		return [array get return]
-	    }
-	}
+            }
+        }
     } else {
-	set return(response_code) [nsv_get payment_gateway_return_codes failure]
-	set return(reason) "There has been an error processing transaction $response_transaction_id: the MD5 hash does not match"
-    ns_log Error "authorize_gateway.decode_response: transaction $response_transaction_id: the MD5 hash does not match"
-	set return(transaction_id) $transaction_id
-	return [array get return]
+        set return(response_code) [nsv_get payment_gateway_return_codes failure]
+        set return(reason) "There has been an error processing transaction $response_transaction_id: the MD5 hash does not match"
+        ns_log Notice "md5_hash: ${md5_hash} response_md5_hash: [string tolower ${response_md5_hash}]"
+        ns_log Error "authorize_gateway.decode_response: transaction $response_transaction_id: the MD5 hash does not match"
+        set return(transaction_id) $transaction_id
+        return [array get return]
     }
 }
 
