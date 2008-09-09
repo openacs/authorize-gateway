@@ -1,13 +1,11 @@
 <master>
   <property name="title">@title;noquote@</property>
-  <property name="signatory">@signatory;noquote@</property>
-  <property name="header_stuff"><link href="index.css" type="text/css" rel="stylesheet"></property>
+    <property name="context">@context;noquote@</property>
+<h2>@title@</h2>
+
   <if @admin_p@ and @authorize_gateway_mounted@>
-    <property name="context_bar"><table width="100%"><tbody><tr><td align="left">@context_bar;noquote@</td><td align="right">[ <a href="@package_url;noquote@admin/">Administer</a> ]</td></tr> </tbody></table></property>
+[ <a href="@package_url;noquote@admin/">Administer</a> ]
   </if>
-  <else>
-    <property name="context_bar">@context_bar;noquote@</property>
-  </else>
 
   <h2>Why</h2>
 
@@ -44,20 +42,18 @@
   <h2>Usage</h2>
 
   <p class="note">Note: This release has been developed on PostgreSQL
-    only. Please report any problems you might find in the <a
-    href="http://openacs.org/sdm/">OpenACS SDM</a>. The SDM can also
-    be used to contribute patches to the @package_name@ package (for
-    example to add Oracle support).</p>
+    only. Oracle ports are welcome.</p>
 
   <p>The @package_name@ requires <a
-    href="http://www.scottg.net/webtools/aolserver/modules/nsopenssl/">nsopenssl</a>
-    and <a href="http://dqd.com/~mayoff/aolserver/">dqd_utils</a> to
-    be installed. Nsopenssl provides the ns_httpsget and ns_httpspost
+    href="http://www.scottg.net/webtools/aolserver/modules/nsopenssl/">nsopenssl</a>.
+    Nsopenssl provides the ns_httpsget and ns_httpspost
     instructions to connect to the secure Authorize.net Direct Connect
-    server. Dqd_utils provides the dqd_md5 instruction to validate the
-    response from the Authorize.net Direct Connect server. Please
-    follow the installation instructions included with these
-    packages.</p>
+    server.  Please follow the installation instructions included with nsopenssl.
+</p><p>
+<a href="http://dqd.com/~mayoff/aolserver/">dqd_utils</a> is no longer required, since
+    OpenACS now requires tcllib which includes an md5 utility.
+    md5 is used to validate the
+    response from the Authorize.net Direct Connect server. </p>
 
   <p>The @package_name@ is the intermediary between OpenACS packages
     and the Authorize.net credit card acceptance services. This
@@ -135,9 +131,8 @@
       
       <h3>authorize_login</h3>
 
-      <p>Your login name to Authorize.net. This is the same login ID
-	that you use to login to the Authorize.net <a
-	  href="https://merchant.authorize.net">virtual terminal</a>.</p>
+      <p>Your login name to Authorize.net. This is a different login ID
+	than what you use to login to the Authorize.net virtual terminal.</p>
 
     </li>
     <li>
@@ -158,8 +153,7 @@
 
       <h3>md5_secret</h3>
 
-      <p>The MD5 Hash Secret from the <a
-	  href="https://merchant.authorize.net">Automated Direct Connect</a>
+      <p>The MD5 Hash Secret from the Automated Direct Connect md5
 	(ADC) settings in Authorize.net. This secret should have the
 	same value your secret in the ADC settings. Do
 	<strong>not</strong> leave this secret blank, it ensures that
@@ -203,9 +197,8 @@
     @payment_gateway_installed@ eq 1></a></if> explains the API to other
   packages in detail.</p>
   
-  <p>Visit the <a
-      href="https://secure.authorize.net/docs/index.pml">Authorize.net
-      developer documentation</a> for in-depth coverage of the
+  <p>Visit the <a href="http://www.authorize.net/">Authorize.net</a>
+      developer documentation for in-depth coverage of the
     Authorize.net API that this package interfaces to. Be sure to check
     out the additional security measures you can take.</p>
 
@@ -230,3 +223,4 @@
   <p>A <a href="license">copy of the GNU General Public License</a> is
     included. If not write to the Free Software Foundation, Inc., 59
     Temple Place, Suite 330, Boston, MA 02111-1307 USA
+</p>

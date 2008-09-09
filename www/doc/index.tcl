@@ -37,8 +37,5 @@ set payment_gateway_installed [apm_package_installed_p "payment-gateway"]
 
 # Set the context bar.
 
-set context_bar [ad_context_bar $package_name]
+set context [list $title]
 
-# Set signatory for at the bottom of the page
-
-set signatory "bart.teeuwisse@thecodemill.biz"
