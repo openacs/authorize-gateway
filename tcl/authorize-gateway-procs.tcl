@@ -130,6 +130,9 @@ ad_proc -private authorize_gateway.authorize {
         set response_cvv_code [lindex $response_list 38]
         set response_avs_code [string range "${response_avs_code} " 0 0]
         append response_avs_code $response_cvv_code
+        if { $response_code eq 3 && $response_reason_code eq 28 } {
+            ns_log Error "authorize_gateway.authorize: Response code 3, Response reason code 28: merchant gateway is not supporting this card type. See transaction log."
+        }
 
 	    authorize_gateway.log_results $response_transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "AUTH_ONLY" \
 		$response $response_code $response_reason_code $response_reason_text $response_auth_code $response_avs_code $amount
@@ -767,8 +770,8 @@ ad_proc -private authorize_gateway.decode_response {
     # module for AOLServer. (http://dqd.com/~mayoff/aolserver/)
     # We are replacing dqd_md5 with tcllib's md5::md5 -hex
 
-
-    set md5_hash [string tolower [md5::md5 -hex "[parameter::get -parameter md5_secret -package_id [apm_package_id_from_key authorize-gateway] -default [parameter::get -package_id [apm_package_id_from_key authorize-gateway] -parameter md5_secret]][parameter::get -parameter authorize_login -package_id [apm_package_id_from_key authorize-gateway] -default [parameter::get -package_id [apm_package_id_from_key authorize-gateway] -parameter authorize_login]]${response_transaction_id}[format "%0.2f" $amount]"]]
+    set auth_package_id [apm_package_id_from_key authorize-gateway]
+    set md5_hash [string tolower [md5::md5 -hex "[parameter::get -parameter md5_secret -package_id $auth_package_id -default [parameter::get -package_id $auth_package_id -parameter md5_secret]][parameter::get -parameter authorize_login -package_id $auth_package_id -default [parameter::get -package_id $auth_package_id -parameter authorize_login]]${response_transaction_id}[format "%0.2f" $amount]"]]
     if {$md5_hash == [string tolower $response_md5_hash]} {
 
         # The response is authentic. Now decode the response code
