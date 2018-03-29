@@ -109,7 +109,7 @@ ad_proc -private authorize_gateway.authorize {
 	# not a character delimited list but an HTML page. An ADC
 	# response has certainly 38 or more elements. Future
 	# versions might return more elements.
-	ns_log Debug "authorize_gateway.authorize: REPONSE LIST: $response_list"
+	ns_log Debug "authorize_gateway.authorize: RESPONSE LIST: $response_list"
     ns_log Notice "authorize_gateway.authorize: llength response_list = [llength $response_list]"
 	if { [llength $response_list] < 38 } {
 	    authorize_gateway.log_results $transaction_id  "[clock format [clock seconds] -format "%D %H:%M:%S"]" "AUTH_ONLY" $response 3 "" \
