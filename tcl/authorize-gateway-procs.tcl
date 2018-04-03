@@ -59,7 +59,7 @@ ad_proc -private authorize_gateway.authorize {
     append full_url "&x_Test_Request=[ns_urlencode $test_request]"
 
     # Set the transaction type to AUTHORIZE ONLY and set the invoice
-    # number to the transaction id paramater. This is a bit confusing
+    # number to the transaction id parameter. This is a bit confusing
     # as the transaction id passed to this procedure should not be
     # mistaken for the transaction id that Authorize.net will generate
     # and return. The Authorize.net transaction id will be store in
@@ -632,7 +632,7 @@ ad_proc -private authorize_gateway.authcapture {
     append full_url "&x_Test_Request=[ns_urlencode $test_request]"
 
     # Set the transaction type to AUTH_CAPTURE and set the invoice
-    # number to the transaction id paramater. This is a bit confusing
+    # number to the transaction id parameter. This is a bit confusing
     # as the transaction id passed to this procedure should not be
     # mistaken for the transaction id that Authorize.net will generate
     # and return. The Authorize.net transaction id will be store in
