@@ -41,7 +41,7 @@ ad_proc -private authorize_gateway.authorize {
 
     # Add the Referer to the headers passed on to Authorize.net
 
-    set header [ns_set new]
+    set header [ns_set create]
     ns_set put $header Referer $referer_url
 
     # Compile the URL for the GET communication with Authorize.net
@@ -228,7 +228,7 @@ ad_proc -public authorize_gateway.return {
 
     # Add the Referer to the headers passed on to Authorize.net
 
-    set header [ns_set new]
+    set header [ns_set create]
     ns_set put $header Referer $referer_url
 
     # Compile the URL for the GET communication with Authorize.net
@@ -349,7 +349,7 @@ ad_proc -public authorize_gateway.void {
 
     # Add the Referer to the headers passed on to Authorize.net
 
-    set header [ns_set new]
+    set header [ns_set create]
     ns_set put $header Referer $referer_url
 
     # Compile the URL for the GET communication with Authorize.net
@@ -492,7 +492,7 @@ ad_proc -private authorize_gateway.postauth {
 
     # Add the Referer to the headers passed on to Authorize.net
 
-    set header [ns_set new]
+    set header [ns_set create]
     ns_set put $header Referer $referer_url
 
     # Compile the URL for the GET communication with Authorize.net
@@ -614,7 +614,7 @@ ad_proc -private authorize_gateway.authcapture {
 
     # Add the Referer to the headers passed on to Authorize.net
 
-    set header [ns_set new]
+    set header [ns_set create]
     ns_set put $header Referer $referer_url
 
     # Compile the URL for the GET communication with Authorize.net
